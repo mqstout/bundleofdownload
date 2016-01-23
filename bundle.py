@@ -142,6 +142,7 @@ def bundle(argv):
 	cookies = browser.cookies.all()
 	for bundle, files in vault.items():
 		print("{0} has {1} files.".format(bundle, len(files)) )
+		# todo: accept input (text file?) of accept list rather than just 'all', or maybe command line for one bundle to fetch
 		if (all or input("\tDownload? y/* ") == "y"):
 			print("\t...Downloading {0}".format(bundle))
 			p = rx.sub("", bundle)
