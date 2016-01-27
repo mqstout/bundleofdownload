@@ -124,7 +124,7 @@ def bundle(argv):
 		for e in bLinks:
 			vault[b[0]].append( (e.value, e['href']) )
 			
-	del item, bundle_count, bLinks
+	del item, bLinks
 
 	print("\n\n")
 
@@ -142,16 +142,19 @@ def bundle(argv):
 				
 	rx = re.compile("[^\w _()'-]+")
 	cookies = browser.cookies.all()
+	currentBundle = 1
 	for bundle, files in vault.items():
-		print("{0} has {1} files.".format(bundle, len(files)) )
+		length = len(files)
+		print("({2}/{3}) {0} has {1} files.".format(bundle, length, currentBundle, bundle_count) )
 		# todo: accept input (text file?) of accept list rather than just 'all', or maybe command line for one bundle to fetch
 		if (all or input("\tDownload? y/* ") == "y"):
 			print("\t...Downloading {0}".format(bundle))
 			p = rx.sub("", bundle)
 			os.makedirs(p, exist_ok=True)
+			currentFile = 1 
 			for f in files:
 				#fn = rx.sub("", f[0]) # Or, assume remote's fine.
-				print("\t\t{0}".format(f[0], end=""))
+				print("\t\t({0}/{1}) - {2}".format(currentFile, length, f[0], end=""))
 				fn = p + "/" + f[0]
 				if (os.path.isfile(fn)):
 					if (not skip and (overwrite or input("\tExists. Overwrite? y/* ") == "y")):
@@ -167,9 +170,11 @@ def bundle(argv):
 						if chunk:
 							fd.write(chunk)
 							fd.flush()
-							print(".", end="")
+							print('.', end='')
 							sys.stdout.flush()
 				print()
+				currentFile+=1
+		currentBundle+=1
 	del rx, cookies
 	
 	print("\n")
